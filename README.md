@@ -58,8 +58,10 @@ Papke, L. E. and Wooldridge, J. M. (1996), Econometric methods for fractional re
 
 Examples
 --------
-`require(foreign)
+```Rcode
+require(foreign)
 data = read.dta("http://fmwww.bc.edu/repec/bocode/c/citybudget.dta")
 X = data[,2:5]
 y = data[,6:11]
-results1 = fmlogit(y,X)`
+results1 = fmlogit(y,X)
+```
