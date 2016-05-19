@@ -1,17 +1,16 @@
 
-fmlogit {fmlogit}	R Documentation
-Estimate Fractional Multinomial Logit Models
-
+fmlogit: Estimate Fractional Multinomial Logit Models
+=====================================================
 Description
-
+-----------
 Used to estimate fractional multinomial logit models using quasi-maximum likelihood estimations following Papke and Wooldridge(1996).
 
 Usage
-
+-----
 fmlogit(y, X, beta0 = NULL, MLEmethod = "CG", maxit = 50000,
   abstol = 1e-04, ...)
 Arguments
-
+---------
 y	
 the dependent variable (N*J). Can be a matrix or a named data frame. The first column of the matrix is automatically treated as the baseline.
 
