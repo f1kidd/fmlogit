@@ -23,21 +23,34 @@ fmlogit(y, X, beta0 = NULL, MLEmethod = "CG", maxit = 50000,
 \item{...}{additional parameters that goes into \code{optim()}}
 }
 \value{
-\code{estimates} A list of J-1 matrices containing parameter estimates, standard errors, and hypothesis testing results.
+The function returns a list of elements below:
 
-\code{likelihood} The likelihood value
+\code{$estimates} A list of matrices containing parameter estimates, standard errors, and hypothesis testing results.
 
-\code{convergence} Convergence diagnostics code
+\code{$likelihood} The likelihood value
 
-\code{count} Dataset information
+\code{$convergence} Convergence diagnostics code
+
+\code{$count} Provides dataset information
 }
 \description{
-fmlogit is used to estimate fractional multinomial logit models using quasi-maximum likelihood estimations.
+Used to estimate fractional multinomial logit models using quasi-maximum likelihood estimations following Papke and Wooldridge(1996).
 }
 \details{
-For definition of the fmlogit likelihood function, see Maarten Buis's fmlogit page: http://maartenbuis.nl/software/likelihoodFmlogit.pdf
+The fractional multinomial model is the expansion of the multinomial logit to fractional responses. Unlike standard multinomial logit models, which only considers 0-1 respones, fractional multinomial model considers the case where the response variable is fractions that sums up to one. Examples of these type of data are, percentages of budget spent in education, defense, public health; fractions of a population that have middle school, high school, college, or post college education, etc.
+ 
+This function follows Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood estimator for fractional response data. The likelihood function used here is a standard multinomial likelihood function, see \url{http://maartenbuis.nl/software/likelihoodFmlogit.pdf} for the likelihood used here. Robust standard errors are provided following Papke and Wooldridge(1996), in which they proposed an asymptotically consistent estimator of variance. 
+
+Maximization is done by calling \code{\link{optim}}. It seems that difference choice of maximization method may yield drastically different parameter estimates. Using the conjugate gradients method yields the same results as using Stata's fmlogit package by Maarten Buis.
 }
 \examples{
-fmlogit(y,X)
+require(foreign)
+data = read.dta("http://fmwww.bc.edu/repec/bocode/c/citybudget.dta")
+X = data[,2:5]
+y = data[,6:11]
+results1 = fmlogit(y,X)
+}
+\references{
+Papke, L. E. and Wooldridge, J. M. (1996), Econometric methods for fractional response variables with an application to 401(k) plan participation rates. J. Appl. Econ., 11: 619-632.
 }
 
