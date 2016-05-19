@@ -33,7 +33,7 @@ Tolerence.
 additional parameters that goes into optim()
 
 Details
-
+-------
 The fractional multinomial model is the expansion of the multinomial logit to fractional responses. Unlike standard multinomial logit models, which only considers 0-1 respones, fractional multinomial model considers the case where the response variable is fractions that sums up to one. Examples of these type of data are, percentages of budget spent in education, defense, public health; fractions of a population that have middle school, high school, college, or post college education, etc.
 
 This function follows Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood estimator for fractional response data. The likelihood function used here is a standard multinomial likelihood function, see http://maartenbuis.nl/software/likelihoodFmlogit.pdf for the likelihood used here. Robust standard errors are provided following Papke and Wooldridge(1996), in which they proposed an asymptotically consistent estimator of variance.
@@ -41,7 +41,7 @@ This function follows Papke and Wooldridge(1996)'s paper, in which they proposed
 Maximization is done by calling optim. It seems that difference choice of maximization method may yield drastically different parameter estimates. Using the conjugate gradients method yields the same results as using Stata's fmlogit package by Maarten Buis.
 
 Value
-
+-----
 The function returns a list of elements below:
 
 $estimates A list of matrices containing parameter estimates, standard errors, and hypothesis testing results.
@@ -53,13 +53,13 @@ $convergence Convergence diagnostics code
 $count Provides dataset information
 
 References
-
+----------
 Papke, L. E. and Wooldridge, J. M. (1996), Econometric methods for fractional response variables with an application to 401(k) plan participation rates. J. Appl. Econ., 11: 619-632.
 
 Examples
-
-require(foreign)
+--------
+`require(foreign)
 data = read.dta("http://fmwww.bc.edu/repec/bocode/c/citybudget.dta")
 X = data[,2:5]
 y = data[,6:11]
-results1 = fmlogit(y,X)
+results1 = fmlogit(y,X)`
