@@ -3,7 +3,7 @@ fmlogit: Estimate Fractional Multinomial Logit Models
 =====================================================
 Description
 -----------
-Used to estimate fractional multinomial logit models using quasi-maximum likelihood estimations following Papke and Wooldridge(1996).
+Estimate fractional multinomial logit models using quasi-maximum likelihood estimations following Papke and Wooldridge(1996).
 
 Usage
 -----
