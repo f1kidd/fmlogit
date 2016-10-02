@@ -90,8 +90,7 @@ Conjugate gradients method is usually faster, but could lead to non-convergence 
 certain scenarios. BHHH is slower, but has better convergence performance.
 }
 \examples{
-require(foreign)
-data = read.dta("http://fmwww.bc.edu/repec/bocode/c/citybudget.dta")
+data = spending
 X = data[,2:5]
 y = data[,6:11]
 results1 = fmlogit(y,X)

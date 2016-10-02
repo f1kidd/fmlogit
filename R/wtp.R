@@ -24,7 +24,7 @@
 #' #effects1 = effects(results1,effect="marginal",se=T)
 #' # assume that the WTP = 1,2,3,...J for each choice j. 
 #' wtp(effects1,seq(1:nrow(effects1$effects))) 
-#' 
+#' @export wtp
 #'
 
 wtp = function(object,wtp.vec,varlist=NULL){

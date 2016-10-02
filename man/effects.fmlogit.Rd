@@ -8,7 +8,7 @@
   marg.type = "atmean", se = F, varlist = NULL, at = NULL, R = 1000)
 }
 \arguments{
-\item{object}{A "fmlogit" object.}
+\item{object}{An "fmlogit" object.}
 
 \item{effect}{Can be "marginal", for marginal effect; or "discrete", for discrete changes from
 the min to the max.}

@@ -60,8 +60,7 @@
 #' 
 #' 
 #' @examples 
-#' require(foreign)
-#' data = read.dta("http://fmwww.bc.edu/repec/bocode/c/citybudget.dta")
+#' data = spending
 #' X = data[,2:5]
 #' y = data[,6:11]
 #' results1 = fmlogit(y,X)
@@ -76,7 +75,17 @@
 fmlogit <- function(y,X,beta0=NULL,MLEmethod="CG",maxit=500000,abstol=0.00001,...){
 
 start.time=proc.time()  
-  
+
+# y has to be numerical. X can be numerical or factor/categorical
+Xclass = sapply(X,class)
+Xfac = which(Xclass %in% c("factor","character"))
+Xfacnames = colnames(X)[Xfac]
+strformFac = paste(Xfacnames,collapse="+")
+# This creates a formula ~dummies, which goes into model.matrix to generate dummies
+Xdum = model.matrix(as.formula(paste("~",strformFac,sep="")),data=X)
+X = cbind(X,Xdum); X = X[,-Xfac]
+
+
 Xnames = colnames(X); ynames = colnames(y)
 X = as.matrix(X); y = as.matrix(y)
 n = dim(X)[1]; j=dim(y)[2]; k=dim(X)[2]
