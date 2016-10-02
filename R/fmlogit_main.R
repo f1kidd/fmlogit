@@ -97,6 +97,8 @@ X = xy[,1:k]; y=xy[,(k+1):(k+j)]
 n = dim(X)[1]
 remove(xy)
 
+# remove pre-existing constant variables
+X = X[,sapply(X,function(x) length(unique(x))!=1)]
 # add constant term if necessary
 X = cbind(X,rep(1,n))
 # here k is No. of explanatories, without the constant term. 
