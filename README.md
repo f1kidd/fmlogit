@@ -5,42 +5,44 @@ date: "Thursday, May 19, 2016"
 output: pdf_document
 ---
 
-This document provides documentations for the fmlogit package in R. Updates will be published at my github site: \url{https://github.com/f1kidd/fmlogit}. Any suggestions or concerns are welcomed\footnote{email: xji@vt.edu}. 
+This document provides documentations for the fmlogit package in R. Updates will be published at [my github site](https://github.com/f1kidd/fmlogit). Any suggestions or concerns are welcomed. 
 
-# Motivation
+# What is fractional multinomial logit?
 Fractional multinomial responses arises naturally in various occasions. For example, a municipality allocates its budgets to multiple departments, and we are interested in the proportion of the budgets that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in the percentage of support for each candidate in each state. 
 
-However, fractional multinomial logit model is *underrepresented* in the booming era of statistical softwares. The model itself is a coupling of *fractional response models*, which deals with responses which are proportional or fractional, and *multinomial response models*, which deals with binary responses of multiple options. As there are multiple softwares that deals with fractional logits and multinomial logits, the only software package that deals with fractional multinomial logits is Stata's fmlogit package by Maarten Buis. This package will contribute to the sea of software packages by providing an implementation of the model in R. 
+# So, why do we even need fmlogit in R? 
+Don't we already have an fmlogit module in Stata? Yes, and you are very welcome to [check that out](http://maartenbuis.nl/software/fmlogit.html). 
 
-Note here that fractional multinomial logit model is a consistent estimator of fractional multinomial responses. Other estimation strategies are certainly useful in estimating fractional multinomials. Dirichlet regression models and two-limit tobit can also deal with responses that are ranged between 0 and 1. However, those models do not have the additional restriction that the proportions sums up to one, and thus will not be preferrable in this case. 
+However, this package offers several advantages over Stata's fmlogit module, namely,
+## 1. Integration with the R Platform
+Implementating the model in R offers the opportunity to integrate the whole empirical process. With the help of numerous R packages, everything can be accomplished in R from data processing, estimation, post-estimation, to final manuscript writing. This is a huge advantage over stata. 
 
-# Econometric Model
-The basis of this function is Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood(QMLE) estimator for fractional response variables. As their approach applies to binary response variables, here we expand it to a multinomial response variables with fractional structure. 
+## 2. Post-estimation Commands
+The marginal effect estimation in this package is much faster than Stata's fmlogit package. In this package user can specify which variable(s), and what effect to be calculated. This results in a huge gain in running time for the post-estimation commands. 
 
-We start by writing:\footnote{The demonstration below is in individual specific notation, but matrix notation is not hard to obtain from the individual specific notations. The actual function uses matrix calculation, which increases algorithm speed.}
-$$E(y_{ij}|x_i) = G(x_i\beta_j)$$
-for the $j^{th}$ choice of the $i^{th}$ obsevation , where G(.) is a know function satisfying 0<G(z)<1 for all $z\in {\rm I\!R}$. Note that here we only allow for common covariates of $x_i$, and not for choice-specific attributes. Following the logit convention, G(.) is chosen to be the multinomial logit function, with the form:
-$$G(z_j) = \frac{exp(z_j)}{\sum_{k=1}^J exp(z_k)}$$
-And the multinomial likelihood function, is thus given by
+Also, this package allows the calculation of marginal and discrete effect at the individual level, which is crucial to detect possible heterogeneities among observations. 
+
+## 3. Estimation Flexibility
+This package allows factor variable inputs, and automatically transform it into dummy variables. This is not (explicitly) allowed in Stata. 
+
+## 4. Extensions
+This package also allows the user to calculate and infer from a vector of "willingness to pay" measures. The user can calculate the mean and the standard error of the effect on overall WTP increase, which is implicitly derived from the choice dynamics. 
+
+# How the estimator works?
+The estimator used here is an extension of Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood(QMLE) estimator for fractional response variables. As their approach applies to binary response variables, here we expand it to a multinomial response variables with fractional structure. 
+
+The basic step of the estimator is the following: 
+## Step 1 Construct the multinomial logit likelihood, which takes the form: 
 $$ ln(L_i) = \sum_{j=1}^J y_{ij} ln(G(x_i\beta_j))$$
-And Papke and Wooldridge(1996) showed that the QMLE estimator of $\beta$, obtained by the the maximazation problem
-$$ argmax_\beta \sum_{i=1}^N ln(L_i)$$
-is a consistent estimator for $\beta$ if G(z) is the correct functional form for E(y|x). 
+where G(.) is the multinomial logit function with form: 
+$$G(z_j) = \frac{exp(z_j)}{\sum_{k=1}^J exp(z_k)}$$
+for which $i \in {1,...,N}$ denotes N individual observation, $j \in {1,...,J}$ denotes J available choices, and $k \in {1,...,K}$ denotes K explanatory variables. 
+## Step 2 Maximize the sum of the log likelihood function
+Generally speaking, R is not the most efficient scientific computing machine that exists, and that is the tradeoff we have to face. Here the program offers several maximization methods provided in the *maxLik* package. The recommended algorithm is either conjugate gradients (CG), or Berndt-Hall-Hall-Hausman (BHHH). For a large dataset it may take a while (running for one hour is entirely possible, so don't terminate the program just yet).
+## step 3 Calculate robust standard error
+Here the program follows Papke & Wooldridge (1996)'s paper, and construct the robust standard error estimator for the parameters. The program also offers a simple z-test for parameters based on the standard error. 
 
-To estimate the standard error for the QMLE estimator, define $g(z_j)\equiv \partial G(z_j)/\partial z_j$, the partial derivative of the multinomial logit function with respect to choice j. Specifically, $g(z_j)$ has the following functional form:
-$$ g(z_j) = \frac{\hat{E}\hat{S} - \hat{E}^2}{\hat{S}^2} $$
-where $\hat{E} = exp(x_i\beta_j)$, and $\hat{S} = \sum_{k=1}^J exp(x_i\beta_k)$. 
-
-A robust asymptotic standard error , $\hat{\beta_j}$, is given by the diagonal element of the following matrix:
-$$\hat{A_j}^{-1}\hat{B_j}\hat{A_j}^{-1}$$
-where
-$$\hat{A} = \sum_{i=1}^N \frac{\hat{g}_{ij}^2 \mathbf{x}_i'\mathbf{x}_i}{\hat{G}_{ij}(1-\hat{G}_{ij})} $$
-$$\hat{B} = \sum_{i=1}^N \frac{\hat{u}_{ij}^2 \hat{g}_{ij}^2 \mathbf{x}_i'\mathbf{x}_i} {[\hat{G}_{ij}](1-\hat{G}_{ij})]^2} $$
-in which $\hat{u}_{ij}$ is the residual for the $j^{th}$ choice of the $i^{th}$ observation, given by $\hat{u}_{ij}=y_{ij} - G(x_i\beta_{j})$. Specifically, $\hat{A}$ is the information matrix, which is not a consistent estimator itself, and $\hat{B}$ is a weight correction for A. 
-
-In most binary / multinomial response models, the convention is to treat one of the choices as a baseline. Here we apply the same logic, and treat j=1 as the baseline scenario. This implicitly generates a restriction that $\beta_1=0$, and all other betas are the marginal difference to the baseline case.  
-
-# Marginal and Discrete Effects
+# How post-estimation commands works?
 
 Interpreting marginal and discrete effects for limited dependent variables can be tricky, and this is especially true for multinomial logit models. The coefficients obtained in the regression model represents the logit-transformed odds ratio for that specific choice against the baseline choice. This is not intuitive at all in terms of what are the actual effects on that specific choice. The bottom line is, the coefficients and standard errors obtained in the original models are not the basis for evaluating hypotheses. 
 
@@ -103,7 +105,6 @@ Papke, L. E. and Wooldridge, J. M. (1996), Econometric methods for fractional re
 
 Wulff, Jesper N. "Interpreting Results From the Multinomial Logit Model Demonstrated by Foreign Market Entry." Organizational Research Methods (2014): 1094428114560024.
 
-Greene, W. H. (2003). Econometric analysis (5th ed.). Upper Saddle River, NJ.: Prentice Hall
 
 
 
