@@ -33,9 +33,9 @@ The estimator used here is an extension of Papke and Wooldridge(1996)'s paper, i
 
 The basic step of the estimator is the following: 
 ## Step 1 Construct the multinomial logit likelihood, which takes the form: 
-$$ ln(L_i) = \sum_{j=1}^J y_{ij} ln(G(x_i\beta_j))$$
+\[ln(L_i) = \sum_{j=1}^J y_{ij} ln(G(x_i\beta_j))\]
 where G(.) is the multinomial logit function with form: 
-$$G(z_j) = \frac{exp(z_j)}{\sum_{k=1}^J exp(z_k)}$$
+\[G(z_j) = \frac{exp(z_j)}{\sum_{k=1}^J exp(z_k)}\]
 for which $i \in {1,...,N}$ denotes N individual observation, $j \in {1,...,J}$ denotes J available choices, and $k \in {1,...,K}$ denotes K explanatory variables. 
 ## Step 2 Maximize the sum of the log likelihood function
 Generally speaking, R is not the most efficient scientific computing machine that exists, and that is the tradeoff we have to face. Here the program offers several maximization methods provided in the *maxLik* package. The recommended algorithm is either conjugate gradients (CG), or Berndt-Hall-Hall-Hausman (BHHH). For a large dataset it may take a while (running for one hour is entirely possible, so don't terminate the program just yet).
