@@ -7,8 +7,19 @@ output: pdf_document
 
 This document provides documentations for the fmlogit package in R. Updates will be published at [my github site](https://github.com/f1kidd/fmlogit). Any suggestions or concerns are welcomed. 
 
-# What is fractional multinomial logit?
+# What is the fractional multinomial logit model?
 Fractional multinomial responses arises naturally in various occasions. For example, a municipality allocates its budgets to multiple departments, and we are interested in the proportion of the budgets that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in the percentage of support for each candidate in each state. 
+
+Fractional multinomial logit model estimates fractional response choice models by explicitly modelling the dependent variables as fractions. It is the preferred model when the true data generation process is indeed fractions of multiple choices. 
+
+# How to install fmlogit
+Type the following code into your R console:
+```R
+install(devtools)
+library(devtools)
+install_github("f1kidd/fmlogit")
+library(fmlogit)
+```
 
 # So, why do we even need fmlogit in R? 
 Don't we already have an fmlogit module in Stata? Yes, and you are very welcome to [check that out](http://maartenbuis.nl/software/fmlogit.html). 
@@ -32,11 +43,11 @@ This package also allows the user to calculate and infer from a vector of "willi
 The estimator used here is an extension of Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood(QMLE) estimator for fractional response variables. As their approach applies to binary response variables, here we expand it to a multinomial response variables with fractional structure. 
 
 The basic step of the estimator is the following: 
-## Step 1 Construct the multinomial logit likelihood
+## Step 1. Construct the multinomial logit likelihood
 This step is straight forward. A simple multinomial logit transformation will do the job. For detailed derivations & formula, please see the technical document [here](https://github.com/f1kidd/fmlogit/blob/master/Documentation/fmlogit_docs.pdf) where I explained the econometric steps in detail.  
-## Step 2 Maximize the sum of the log likelihood function
+## Step 2. Maximize the sum of the log likelihood function
 Generally speaking, R is not the most efficient scientific computing machine that exists, and that is the tradeoff we have to face. Here the program offers several maximization methods provided in the *maxLik* package. The recommended algorithm is either conjugate gradients (CG), or Berndt-Hall-Hall-Hausman (BHHH). For a large dataset it may take a while (running for one hour is entirely possible, so don't terminate the program just yet).
-## step 3 Calculate robust standard error
+## step 3. Calculate robust standard error
 Here the program follows Papke & Wooldridge (1996)'s paper, and construct the robust standard error estimator for the parameters. The program also offers a simple z-test for parameters based on the standard error. 
 
 # How post-estimation commands works?
