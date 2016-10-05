@@ -42,7 +42,7 @@ wtp = function(object,wtp.vec,varlist=NULL){
   # wtp calcs
   betamat = object$effects[,varlist]; semat = object$se[,varlist]
   wtp_mean = wtp.vec %*% betamat
-  if(length(object$R)>0){
+  if(object$R>0){
   wtp_se = sqrt(wtp.vec^2 %*% semat^2)
   # output tables
   tabout = matrix(ncol=4,nrow=k)

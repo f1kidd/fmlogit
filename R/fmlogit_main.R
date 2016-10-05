@@ -14,7 +14,7 @@
 #'   Default to "CG", the conjugate gradients method. See Details. 
 #' @param maxit Maximum number of iteration.
 #' @param abstol Tolerence.
-#' @param ... additional parameters that goes into \code{optim()}
+#' @param ... additional parameters that goes into \code{maxLik()}
 #' @return The function returns an object of class "fmlogit". Use \code{effects}, \code{predict}, 
 #'  \code{residual}, \code{fitted} to extract various useful features of the value returned by 
 #' \code{fmlogit}. 
@@ -79,12 +79,13 @@ start.time=proc.time()
 # y has to be numerical. X can be numerical or factor/categorical
 Xclass = sapply(X,class)
 Xfac = which(Xclass %in% c("factor","character"))
+if(length(Xfac)>0){
 Xfacnames = colnames(X)[Xfac]
 strformFac = paste(Xfacnames,collapse="+")
 # This creates a formula ~dummies, which goes into model.matrix to generate dummies
-Xdum = model.matrix(as.formula(paste("~",strformFac,sep="")),data=X)
+Xdum = model.matrix(as.formula(paste("~",strformFac,sep="")),data=X)[,-1]
 X = cbind(X,Xdum); X = X[,-Xfac]
-
+}
 
 Xnames = colnames(X); ynames = colnames(y)
 X = as.matrix(X); y = as.matrix(y)
@@ -98,7 +99,7 @@ n = dim(X)[1]
 remove(xy)
 
 # remove pre-existing constant variables
-X = X[,sapply(X,function(x) length(unique(x))!=1)]
+X = X[,apply(X,2,function(x) length(unique(x))!=1)]
 # add constant term if necessary
 X = cbind(X,rep(1,n))
 # here k is No. of explanatories, without the constant term. 
