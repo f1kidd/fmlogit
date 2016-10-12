@@ -1,7 +1,7 @@
 ---
-title: "The fmlogit Package: A Document"
+title: "The fmlogit Package: A Light Document"
 author: "Xinde James Ji" 
-date: "Thursday, May 19, 2016"
+date: "Oct 10, 2016"
 output: pdf_document
 ---
 
@@ -10,7 +10,7 @@ This document provides documentations for the fmlogit package in R. Updates will
 # What is the fractional multinomial logit model?
 Fractional multinomial responses arises naturally in various occasions. For example, a municipality allocates its budgets to multiple departments, and we are interested in the proportion of the budgets that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in the percentage of support for each candidate in each state. 
 
-Fractional multinomial logit model estimates fractional response choice models by explicitly modelling the dependent variables as fractions. It is the preferred model when the true data generation process is indeed fractions of multiple choices. 
+The model is distinct in that 1) each of the response lies between 0 and 1, and 2) the share of all responses adds up to one. The fmlogit model utilizes the two distinct factors, and model it explicitly. 
 
 # How to install fmlogit
 Type the following code into your R console:
@@ -28,10 +28,10 @@ However, this package offers several advantages over Stata's fmlogit module, nam
 ## 1. Integration with the R Platform
 Implementating the model in R offers the opportunity to integrate the whole empirical process. With the help of numerous R packages, everything can be accomplished in R from data processing, estimation, post-estimation, to final manuscript writing. This is a huge advantage over stata. 
 
-## 2. Post-estimation Commands
+## 2. Post-estimation Improvements
 The marginal effect estimation in this package is much faster than Stata's fmlogit package. In this package user can specify which variable(s), and what effect to be calculated. This results in a huge gain in running time for the post-estimation commands. 
 
-Also, this package allows the calculation of marginal and discrete effect at the individual level, which is crucial to detect possible heterogeneities among observations. 
+Also, this package allows hypothesis testing for marginal and discrete effects while Stata does not. The standard error is calculated via Krinsky-Robb method, which allows empirical hypothesis testing without knowing the underlying distribution of the effects. 
 
 ## 3. Estimation Flexibility
 This package allows factor variable inputs, and automatically transform it into dummy variables. This is not (explicitly) allowed in Stata. 
@@ -63,7 +63,9 @@ A more inclusive approach will be to plot the marginal effect of interest across
 
 ## Standard Errors
 
-Here we adopt the simulation-based Krinsky-Robb method to compute standard errors for marginal and discrete effects as oppose to the empirical delta method used in Stata. These two methods should be asymptotically equivalent, and has little empirical difference when sample size is large. 
+Here we adopt the simulation-based Krinsky-Robb method to compute standard errors for marginal and discrete effects as oppose to the empirical delta method used in Stata. These two methods should be asymptotically equivalent. However, using Krinsky-Robb allow us to perform hypothesis testing on the effects, while Delta method cannot accomplish that. 
+
+The hypothesis testing here is very simple: say we test $H_0: D_j=0$. We just need to compare 0 with our N draws, and see if it falls out of the 95% mass. This is a major advantage we provide here comparing with Stata's fmlogit module. 
 
 # Practical Concerns
 
