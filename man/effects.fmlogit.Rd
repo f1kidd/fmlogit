@@ -25,6 +25,9 @@ Use "constant" if wish to compute the marginal effect of constant.}
 \item{at}{Under development}
 
 \item{R}{Number of times to sample for the Krinsky-Robb standard error. Default to 1000.}
+
+\item{marg.list}{A list of matrices storing the marginal effect matrix for each observation. Exists 
+only if marg.type="aveacr".}
 }
 \value{
 The function returns an object of class "fmlogit.margins". It contains the following component:

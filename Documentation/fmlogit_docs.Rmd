@@ -1,21 +1,19 @@
 ---
-title: "The fmlogit Package: A Document"
+title: "The fmlogit Package: An Econometric Document"
 author: "Xinde James Ji" 
-date: "Thursday, May 19, 2016"
+date: "Oct.10, 2016"
 output: pdf_document
 ---
 
-This document provides documentations for the fmlogit package in R. Updates will be published at my github site: \url{https://github.com/f1kidd/fmlogit}. Any suggestions or concerns are welcomed\footnote{email: xji@vt.edu}. 
+This document provides theoretical documentations for the fmlogit package in R. Updates will be published at my github site: \url{https://github.com/f1kidd/fmlogit}. Any suggestions or concerns are welcomed\footnote{email: xji@vt.edu}. For function usage and calls, please check directly with help(func_name). 
 
 # Motivation
-Fractional multinomial responses arises naturally in various occasions. For example, a municipality allocates its budgets to multiple departments, and we are interested in the proportion of the budgets that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in the percentage of support for each candidate in each state. 
+Fractional multinomial responses, or multivariate share models, arises naturally in various occasions.  For example, a municipality allocates its budgets to multiple departments, and we are interested in the proportion of the budgets that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in the percentage of support for each candidate in each state. 
 
-However, fractional multinomial logit model is *underrepresented* in the booming era of statistical softwares. The model itself is a coupling of *fractional response models*, which deals with responses which are proportional or fractional, and *multinomial response models*, which deals with binary responses of multiple options. As there are multiple softwares that deals with fractional logits and multinomial logits, the only software package that deals with fractional multinomial logits is Stata's fmlogit package by Maarten Buis. This package will contribute to the sea of software packages by providing an implementation of the model in R. 
-
-Note here that fractional multinomial logit model is a consistent estimator of fractional multinomial responses. Other estimation strategies are certainly useful in estimating fractional multinomials. Dirichlet regression models and two-limit tobit can also deal with responses that are ranged between 0 and 1. However, those models do not have the additional restriction that the proportions sums up to one, and thus will not be preferrable in this case. 
+The model is distinct in that 1) each of the response lies between 0 and 1, and 2) the share of all responses adds up to one. The fmlogit model utilizes the two distinct factors, and model it explicitly using a multinomial logit transformation on the response variables. If the true data generating process is multinomial fractions, or shares of multiple choices, then the fractional multinomial logit model is consistent and efficient, while other candidate models such as Dirichlet or Beta regression is not. 
 
 # Econometric Model
-The basis of this function is Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood(QMLE) estimator for fractional response variables. As their approach applies to binary response variables, here we expand it to a multinomial response variables with fractional structure. 
+The basis of this package is Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood(QMLE) estimator for fractional response variables. As their approach applies to binary response variables, here we expand it to a multinomial response variables with fractional structure. 
 
 We start by writing:\footnote{The demonstration below is in individual specific notation, but matrix notation is not hard to obtain from the individual specific notations. The actual function uses matrix calculation, which increases algorithm speed.}
 $$E(y_{ij}|x_i) = G(x_i\beta_j)$$
@@ -23,7 +21,8 @@ for the $j^{th}$ choice of the $i^{th}$ obsevation , where G(.) is a know functi
 $$G(z_j) = \frac{exp(z_j)}{\sum_{k=1}^J exp(z_k)}$$
 And the multinomial likelihood function, is thus given by
 $$ ln(L_i) = \sum_{j=1}^J y_{ij} ln(G(x_i\beta_j))$$
-And Papke and Wooldridge(1996) showed that the QMLE estimator of $\beta$, obtained by the the maximazation problem
+with $\beta_1=0$, the baseline coefficient equal to zero. 
+Papke and Wooldridge(1996) showed that the QMLE estimator of $\beta$, obtained by the the maximazation problem
 $$ argmax_\beta \sum_{i=1}^N ln(L_i)$$
 is a consistent estimator for $\beta$ if G(z) is the correct functional form for E(y|x). 
 
@@ -89,7 +88,10 @@ For i in 1:N, where N is a very large number,
 
 And after sufficiently large sample size, the empirical variance converges to the theoretical variance. 
 
-Note that the Krinsky-Robb sampling is done by setting all other covariates to the mean, i.e., the MEM and the DEM approach. 
+## Hypothesis Testing of Marginal and Discrete Effects
+One of the major advantages of Krinsky-Robb over numerical Delta method is in hypothesis testing of those effects. The marginal and discrete effect are not normally distributed since the effect contains a multinomial logit distributed $p_ij$. So even though sample size is large, the central limit theorem does not really hold here. So knowing the standard error does not really help if we do not know the actual shape of the density. But that is out of the scope of the Delta method.
+
+Krinsky-Robb solves this problem by providing empirical draws from the marginal effects. Hypothesis testing here will be very simple: say we test $H_0: D_j=0$. We just need to compare 0 with our N draws, and see if it falls out of the 95% mass. This is a major advantage we provide here comparing with Stata's fmlogit module. 
 
 # Practical Concerns
 ## Optimization Method

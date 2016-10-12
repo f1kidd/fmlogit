@@ -26,7 +26,7 @@ Default to "CG", the conjugate gradients method. See Details.}
 
 \item{abstol}{Tolerence.}
 
-\item{...}{additional parameters that goes into \code{optim()}}
+\item{...}{additional parameters that goes into \code{maxLik()}}
 }
 \value{
 The function returns an object of class "fmlogit". Use \code{effects}, \code{predict}, 

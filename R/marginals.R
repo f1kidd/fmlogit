@@ -11,6 +11,8 @@
 #' @param varlist A string vector which provides the name of variables to calculate 
 #' the marginal effect. If missing, all variables except the constant will be calculated. 
 #' Use "constant" if wish to compute the marginal effect of constant. 
+#' @param marg.list A list of matrices storing the marginal effect matrix for each observation. Exists 
+#' only if marg.type="aveacr". 
 #' @param at Under development
 #' @param R Number of times to sample for the Krinsky-Robb standard error. Default to 1000. 
 #' @details Interpreting marginal and discrete effects for limited dependent variables can be tricky,
@@ -72,6 +74,7 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
   
   xmarg = matrix(ncol=k,nrow=j)
   se_mat = matrix(ncol=k,nrow=j)
+  marg_list = list()
 
   if(effect == "marginal"){
     # calculate marginal effects
@@ -84,6 +87,7 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
         betak_long = matrix(rep(betamat[,c],N),nrow=N,byrow=T)
         marg_mat =  yhat * (betak_long-beta_bar)
         xmarg[,c1] = colMeans(marg_mat)
+        marg_list[[c1]] = marg_mat
       }
       if(marg.type == "atmean"){
         # this is the marginal effect at the mean
@@ -110,6 +114,7 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
             marg_matrix[r,i] = as.numeric(marg_vec)[i]
           }
           se_mat[i,c1] = sd(marg_matrix[,i])
+          hist(marg_matrix[,i])
         }}}}
   
   if(effect=="discrete"){
@@ -123,6 +128,7 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
         yhat_max = predict(object,newdata=Xmax)
         ydisc = yhat_max - yhat_min
         xmarg[,c1] = colMeans(ydisc)
+        marg_list[[c1]] = ydisc
       }
       if(marg.type == "atmean"){
         Xmin <- Xmax <- colMeans(object$X[,-K])
@@ -170,6 +176,7 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
   outlist=list()
   outlist$effects = xmarg
   if(se==T){outlist$se = se_mat; outlist$ztable = listmat}
+  if(marg.type=="aveacr") names(marg_list)=varlist; outlist$marg.list = marg_list
   marg.type.out = ifelse(marg.type=="atmean","at the mean,","average across observations,")
   outlist$R = ifelse(se,R,0)
   outlist$expl = paste(effect,"effect",marg.type.out,
