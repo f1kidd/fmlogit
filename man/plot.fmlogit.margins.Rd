@@ -11,27 +11,64 @@
 \arguments{
 \item{object}{An "fmlogit.margins" object.}
 
-\item{varlist}{A string vector which provides the name of variables to calculate 
-the wtp. If missing, all variables in object will be calculated.}
+\item{varlist}{A string vector which provides the name of variables to plot the effect.
+If missing, all variables in object will be plotted.}
 
 \item{X}{The covariates matrix. Recommend to use element X from the fmlogit object.}
 
 \item{y}{The covariates matrix. Recommend to use element y from the fmlogit object.}
 
-\item{against}{A character string of an index to plot against. Default to Null, and uses
-"natural" order of the dataset.}
+\item{against}{A vector with the same length as the number of observations in the model. 
+Serve as the x-axis in the plots.}
 
-\item{mfrow}{A two-element numeric vector indicating plot panel row and column. 
-Feeds into par(mfrow). Please make sure that the size of the panel is larger than the
-number of choices. If NULL, use default method to generate square panels.}
+\item{against.x}{A character string, Supply the column name in the X matrix to be plot against.}
+
+\item{against.y}{A character string, Supply the column name in the y matrix to be plot against.}
+
+\item{group.by}{A character string. Supply additional algebra emposed on the group variable.}
+
+\item{mfrow}{A numeric vector with two elements. Specify the number of rows and columns in a panel.
+Similar to par(mfrow=c()). Default to Null, and the program will choose a square panel.}
+
+\item{group.x}{A character string. Supply the column name in the X matrix to be grouped upon.}
 }
 \value{
-Plots of effects vs. chosen variables
+Panel plots of effects vs. chosen variables
 }
 \description{
 Calculates the willingness to pay for fractional multinomial logit models.
 }
 \details{
+This function provides a visualization tool for potentially heterogeneous marginal and discrete effects.
+The function lets the user to plot marginal effects to detect any patterns in the effects, in itself
+and against other variables. The plot also allows visualization of sub-groups in data, which can be
+very useful to visualize categorical and dummy variables. 
 
+The functions takes an fmlogit.margins object, created by the effects(fmlogit) function. Note that since 
+the plotting requires marginal effects for all observations, the object should be created by choosing 
+\code{marg.type="aveacr"}, the average across method for effects calculation. 
+
+Additional parameters including \code{varlist}, a vector of string variable names to be plotted. \code{X}
+ and \code{y}, the dependent and independent variable matrix in the original regression model. 
+ 
+ \code{against}, \code{against.x}, and \code{against.y} allows different variables to be chosen
+ as the x-axis. \code{against} directly supplies the vector to be plotted against, whereas \code{against.x}
+ and \code{against.y} supplies variable names in the original dataset. Note that the user has to provide
+ \code{X} and \code{y} in order to use the column name option, respectively. 
+ 
+ \code{group.x} supplies the column name in the X matrix to be grouped by. The plot will be able to 
+ differentiate different groups by colors. Additionally, the user can supply a string to \code{group.by},
+ which provides a algebra method that will be evaluated on the group vector. For example, choose 
+ \code{group.x = "a"} and \code{group.by= ">0"} will create two groups, one with X$a>0, and one with X$a
+ <=0
+}
+\examples{
+ 
+# Not running
+# results1 = fmlogit(y,X)
+# effect1 = effects(results1,effect="marginal",marg.type="aveacr")
+
+# Plot only takes effects with marg.type="aveacr". 
+plot(effect1,X=results1$X,against.x = "popdens", group = "tot", groupby = ">3")
 }
 

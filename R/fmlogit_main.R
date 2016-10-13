@@ -98,6 +98,20 @@ X = xy[,1:k]; y=xy[,(k+1):(k+j)]
 n = dim(X)[1]
 remove(xy)
 
+# test if there is colinearity in X
+testcols <- function(X) {
+  m = crossprod(as.matrix(X))
+  ee= eigen(m)
+  ## split eigenvector matrix into a list, by columns
+  evecs <- split(zapsmall(ee$vectors),col(ee$vectors))
+  ## for non-zero eigenvalues, list non-zero evec components
+  mapply(function(val,vec) {
+    if (val!=0) NULL else which(vec!=0)
+  },zapsmall(ee$values),evecs)
+}
+collinear = unlist(testcols(X))
+if(length(collinear)>1) {X = X[,-collinear[-1]]; Xnames = colnames(X)}
+
 # remove pre-existing constant variables
 X = X[,apply(X,2,function(x) length(unique(x))!=1)]
 # add constant term if necessary
