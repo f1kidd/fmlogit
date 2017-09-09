@@ -234,7 +234,7 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
   outlist$effects = xmarg
   if(se==T){outlist$se = se_mat; outlist$ztable = listmat}
   marg.type.out = ifelse(marg.type=="atmean","at the mean,","average across observations,")
-  outlist$R = ifelse(se==T,R,NULL)
+  outlist$R = ifelse(se==T,R,NA)
   outlist$expl = paste(effect,"effect",marg.type.out,
                        ifelse(se==T,"Krinsky-Robb standard error calculated","standard error not computed"))
   return(structure(outlist,class="fmlogit.margins"))
