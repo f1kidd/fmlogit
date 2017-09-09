@@ -171,6 +171,69 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
   outlist$effects = xmarg
   if(se==T){outlist$se = se_mat; outlist$ztable = listmat}
   marg.type.out = ifelse(marg.type=="atmean","at the mean,","average across observations,")
+  outlist$R = ifelse(se==T,R,NA)
+  outlist$expl = paste(effect,"effect",marg.type.out,
+                       ifelse(se==T,"Krinsky-Robb standard error calculated","standard error not computed"))
+  return(structure(outlist,class="fmlogit.margins"))
+}
+    for(c in var_colNo){
+      c1 = which(var_colNo == c)
+      if(marg.type == "aveacr"){
+        Xmin <- Xmax <- object$X[,-K]
+        Xmin[,c] = min(object$X[,c])
+        Xmax[,c] = max(object$X[,c])
+        yhat_min = predict(object,newdata=Xmin)
+        yhat_max = predict(object,newdata=Xmax)
+        ydisc = yhat_max - yhat_min
+        xmarg[,c1] = colMeans(ydisc)
+      }
+      if(marg.type == "atmean"){
+        Xmin <- Xmax <- colMeans(object$X[,-K])
+        Xmin[c] = min(object$X[,c])
+        Xmax[c] = max(object$X[,c])
+        yhat_min = predict(object,newdata=Xmin)
+        yhat_max = predict(object,newdata=Xmax)
+        ydisc = yhat_max - yhat_min
+        xmarg[,c1] = as.numeric(ydisc)
+      }
+      if(se==T){
+        # se calculation for discrete margins. using atmean by default
+        se_k = rep(0,j)
+        Xmin <- Xmax <- colMeans(object$X[,-K])
+        Xmin[c] = min(object$X[,c])
+        Xmax[c] = max(object$X[,c])
+        marg_matrix = matrix(nrow=R,ncol=j)
+        for(i in 1:j){
+          se_k[i] = sqrt(diag(object$vcov[[i]])[c])
+          new_betak = rnorm(R,betamat[j,c],se_k[i])      
+          for(r in 1:R){
+            new_betamat = betamat; new_betamat[i,c] = new_betak[r]
+            yhat_min = predict(object,newdata=Xmin,newbeta = new_betamat)
+            yhat_max = predict(object,newdata=Xmax,newbeta = new_betamat)
+            ydisc = yhat_max - yhat_min
+            marg_matrix[r,i] = as.numeric(ydisc)[i]
+          }
+          se_mat[i,c1] = sd(marg_matrix[,i])
+        }}}}
+  # generating hypothesis testing tables.
+  listmat = list()
+  for(i in 1:k){
+    tabout = matrix(ncol=4,nrow=j)
+    tabout[,1:2] = cbind(xmarg[,i],se_mat[,i])
+    tabout[,3] = tabout[,1] / tabout[,2]
+    tabout[,4] = 2*(1-pnorm(abs(tabout[,3])))
+    colnames(tabout) = c("estimate","std","z","p-value")
+    rownames(tabout) = ynames
+    listmat[[i]] = tabout
+  }
+  names(listmat)=varlist
+  
+  colnames(xmarg) <- colnames(se_mat) <- varlist
+  rownames(xmarg) <- rownames(se_mat) <-colnames(object$y)
+  outlist=list()
+  outlist$effects = xmarg
+  if(se==T){outlist$se = se_mat; outlist$ztable = listmat}
+  marg.type.out = ifelse(marg.type=="atmean","at the mean,","average across observations,")
   outlist$R = ifelse(se==T,R,NULL)
   outlist$expl = paste(effect,"effect",marg.type.out,
                        ifelse(se==T,"Krinsky-Robb standard error calculated","standard error not computed"))
