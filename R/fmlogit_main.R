@@ -82,6 +82,7 @@ Xclass = sapply(X,class)
 # Get factor and character columns
 Xfac = which(Xclass %in% c("factor","character"))
 
+# Check for categorical variables and generate dummies
 if( length(Xfac > 0)){
   Xfacnames = colnames(X)[Xfac]
   strformFac = paste(Xfacnames,collapse="+")
