@@ -79,7 +79,10 @@ start.time=proc.time()
 
 # y has to be numerical. X can be numerical or factor/categorical
 Xclass = sapply(X,class)
+
+# Get factor and character columns
 Xfac = which(Xclass %in% c("factor","character"))
+
 if(length(Xfac)>0){
 Xfacnames = colnames(X)[Xfac]
 strformFac = paste(Xfacnames,collapse="+")
@@ -101,6 +104,7 @@ n = dim(X)[1]
 remove(xy)
 
 # remove pre-existing constant variables
+
 X = X[,apply(X,2,function(x) length(unique(x))!=1)]
 Xnames = colnames(X)
 k=dim(X)[2]

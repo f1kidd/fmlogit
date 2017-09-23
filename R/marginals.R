@@ -189,9 +189,11 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
   if(se==T){outlist$se = se_mat; outlist$ztable = listmat}
   if(marg.type=="aveacr") {names(marg_list)=varlist; outlist$marg.list = marg_list}
   marg.type.out = ifelse(marg.type=="atmean","at the mean,","average across observations,")
+
   # please include this in the file
   outlist$R = ifelse(se,R,0)
   # please
+
   outlist$expl = paste(effect,"effect",marg.type.out,
                        ifelse(se==T,"Krinsky-Robb standard error calculated","standard error not computed"))
   return(structure(outlist,class="fmlogit.margins"))
