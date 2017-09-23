@@ -14,7 +14,7 @@
 #'   Default to "CG", the conjugate gradients method. See Details. 
 #' @param maxit Maximum number of iteration.
 #' @param abstol Tolerence.
-#' @param ... additional parameters that goes into \code{optim()}
+#' @param ... additional parameters that goes into \code{maxLik()}
 #' @return The function returns an object of class "fmlogit". Use \code{effects}, \code{predict}, 
 #'  \code{residual}, \code{fitted} to extract various useful features of the value returned by 
 #' \code{fmlogit}. 
@@ -29,6 +29,7 @@
 #' @return \code{y}           The dependent variable data frame.
 #' @return \code{X}           The independent variable data frame. Augmented by factor dummy transformation
 #' , constant term added. 
+#' @return \code{rowNo}       A vector of row numbers from the original X and y that is used for estimation.
 #' @return \code{coefficient} Matrix of estimated coefficients. Augmented with the baseline coefficient
 #' (which is a vector of zeros). 
 #' @return \code{vcov}        A list of matrices containing the robust variance covariance matrix for each choice
@@ -82,13 +83,12 @@ Xclass = sapply(X,class)
 # Get factor and character columns
 Xfac = which(Xclass %in% c("factor","character"))
 
-# Check for categorical variables and generate dummies
-if( length(Xfac > 0)){
-  Xfacnames = colnames(X)[Xfac]
-  strformFac = paste(Xfacnames,collapse="+")
-  # This creates a formula ~dummies, which goes into model.matrix to generate dummies
-  Xdum = model.matrix(as.formula(paste("~",strformFac,sep="")),data=X)
-  X = cbind(X,Xdum); X = X[,-Xfac] 
+if(length(Xfac)>0){
+Xfacnames = colnames(X)[Xfac]
+strformFac = paste(Xfacnames,collapse="+")
+# This creates a formula ~dummies, which goes into model.matrix to generate dummies
+Xdum = model.matrix(as.formula(paste("~",strformFac,sep="")),data=X)[,-1]
+X = cbind(X,Xdum); X = X[,-Xfac]
 }
 
 Xnames = colnames(X); ynames = colnames(y)
@@ -98,23 +98,39 @@ n = dim(X)[1]; j=dim(y)[2]; k=dim(X)[2]
 # handles missing value
 xy = cbind(X,y)
 xy = na.omit(xy)
+row.remain = setdiff(1:n,attr(xy,"na.action"))
 X = xy[,1:k]; y=xy[,(k+1):(k+j)]
 n = dim(X)[1]
 remove(xy)
 
 # remove pre-existing constant variables
-if( length(Xfac > 0 )) X = X[,sapply(X,function(x) length(unique(x))!=1)]
 
-# add constant term if necessary
+X = X[,apply(X,2,function(x) length(unique(x))!=1)]
+Xnames = colnames(X)
+k=dim(X)[2]
+# add constant term. k does not change here. 
 X = cbind(X,rep(1,n))
-# here k is No. of explanatories, without the constant term. 
-knew = qr(X)$rank # rank of X matrix
-k=knew-1
-if(knew<dim(X)[2]){ # X has constant column
-  X = X[,1:knew]
-} else{ # Augment constant column
-  if(length(Xnames)==k) Xnames = c(Xnames,"constant"); colnames(X) = Xnames
+Xnames = c(Xnames,"constant"); colnames(X) = Xnames
+
+# test if there is colinearity in X
+testcols <- function(X){
+  m = crossprod(as.matrix(X))
+  ee= eigen(m)
+  ## split eigenvector matrix into a list, by columns
+  evecs <- split(zapsmall(ee$vectors),col(ee$vectors))
+  ## for non-zero eigenvalues, list non-zero evec components
+  mapply(function(val,vec) {
+    if (val!=0) NULL else which(vec!=0)
+  },zapsmall(ee$values),evecs)
 }
+collinear = unique(unlist(testcols(X)))
+while(length(collinear)>0){
+  if((k+1) %in% collinear) collinear = collinear[-length(collinear)]
+  X = X[,-collinear[length(collinear)]]; Xnames = colnames(X); k=k-1
+  collinear = unique(unlist(testcols(X)))
+}
+
+
 
 QMLE<-function(betas){
   # This is the overall(sum) log likelihood. 
@@ -208,6 +224,7 @@ outlist$convergence = paste(opt$type, paste(as.character(opt$iterations),"iterat
 outlist$count = c(Obs=n,Explanatories=k,Choices=j)
 outlist$y = y
 outlist$X = X
+outlist$rowNo = row.remain
 outlist$coefficient = betamat_aug
 names(vcov) = ynames
 outlist$vcov = vcov

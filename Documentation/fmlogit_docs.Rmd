@@ -1,21 +1,19 @@
 ---
-title: "The fmlogit Package: A Document"
-author: "Xinde James Ji" 
-date: "Thursday, May 19, 2016"
+title: 'The fmlogit Package: An Econometric Document'
+author: "Xinde James Ji"
+date: "Oct.10, 2016"
 output: pdf_document
 ---
 
-This document provides documentations for the fmlogit package in R. Updates will be published at my github site: \url{https://github.com/f1kidd/fmlogit}. Any suggestions or concerns are welcomed\footnote{email: xji@vt.edu}. 
+This document provides theoretical documentations for the "fmlogit" package in R. Updates will be published at my github site: \url{https://github.com/f1kidd/fmlogit}. Any suggestions or concerns are welcomed\footnote{email: xji@vt.edu}. For function usage and calls, please check directly with help(func_name) after loading the fmlogit package. 
 
 # Motivation
-Fractional multinomial responses arises naturally in various occasions. For example, a municipality allocates its budgets to multiple departments, and we are interested in the proportion of the budgets that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in the percentage of support for each candidate in each state. 
+Fractional multinomial responses, or multivariate share models, arises naturally in various occasions.  For example, a municipality allocates its budgets to multiple departments, and we are interested in the proportion of the budgets that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in the percentage of support for each candidate in each state. 
 
-However, fractional multinomial logit model is *underrepresented* in the booming era of statistical softwares. The model itself is a coupling of *fractional response models*, which deals with responses which are proportional or fractional, and *multinomial response models*, which deals with binary responses of multiple options. As there are multiple softwares that deals with fractional logits and multinomial logits, the only software package that deals with fractional multinomial logits is Stata's fmlogit package by Maarten Buis. This package will contribute to the sea of software packages by providing an implementation of the model in R. 
-
-Note here that fractional multinomial logit model is a consistent estimator of fractional multinomial responses. Other estimation strategies are certainly useful in estimating fractional multinomials. Dirichlet regression models and two-limit tobit can also deal with responses that are ranged between 0 and 1. However, those models do not have the additional restriction that the proportions sums up to one, and thus will not be preferrable in this case. 
+The model is distinct in that 1) each of the response lies between 0 and 1, and 2) the share of all responses adds up to one. The fmlogit model utilizes the two distinct factors, and model it explicitly using a multinomial logit transformation on the response variables. If the true data generating process is multinomial fractions, or shares of multiple choices, then the fractional multinomial logit model is consistent and efficient, while other candidate models such as Dirichlet or Beta regression is not. 
 
 # Econometric Model
-The basis of this function is Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood(QMLE) estimator for fractional response variables. As their approach applies to binary response variables, here we expand it to a multinomial response variables with fractional structure. 
+The basis of this package is Papke and Wooldridge(1996)'s paper, in which they proposed a quasi-maximum likelihood(QMLE) estimator for fractional response variables. As their approach applies to binary response variables, here we expand it to a multinomial response variables with fractional structure. 
 
 We start by writing:\footnote{The demonstration below is in individual specific notation, but matrix notation is not hard to obtain from the individual specific notations. The actual function uses matrix calculation, which increases algorithm speed.}
 $$E(y_{ij}|x_i) = G(x_i\beta_j)$$
@@ -23,7 +21,8 @@ for the $j^{th}$ choice of the $i^{th}$ obsevation , where G(.) is a know functi
 $$G(z_j) = \frac{exp(z_j)}{\sum_{k=1}^J exp(z_k)}$$
 And the multinomial likelihood function, is thus given by
 $$ ln(L_i) = \sum_{j=1}^J y_{ij} ln(G(x_i\beta_j))$$
-And Papke and Wooldridge(1996) showed that the QMLE estimator of $\beta$, obtained by the the maximazation problem
+with $\beta_1=0$, the baseline coefficient equal to zero. 
+Papke and Wooldridge(1996) showed that the QMLE estimator of $\beta$, obtained by the the maximazation problem
 $$ argmax_\beta \sum_{i=1}^N ln(L_i)$$
 is a consistent estimator for $\beta$ if G(z) is the correct functional form for E(y|x). 
 
@@ -40,13 +39,15 @@ in which $\hat{u}_{ij}$ is the residual for the $j^{th}$ choice of the $i^{th}$ 
 
 In most binary / multinomial response models, the convention is to treat one of the choices as a baseline. Here we apply the same logic, and treat j=1 as the baseline scenario. This implicitly generates a restriction that $\beta_1=0$, and all other betas are the marginal difference to the baseline case.  
 
-# Marginal and Discrete Effects
+# Partial Effects
 
-Interpreting marginal and discrete effects for limited dependent variables can be tricky, and this is especially true for multinomial logit models. The coefficients obtained in the regression model represents the logit-transformed odds ratio for that specific choice against the baseline choice. This is not intuitive at all in terms of what are the actual effects on that specific choice. The bottom line is, the coefficients and standard errors obtained in the original models are not the basis for evaluating hypotheses. 
+Interpreting partial effects for limited dependent variables can be tricky, and this is especially true for multinomial logit models. The coefficients obtained in the regression model represents the logit-transformed odds ratio for that specific choice against the baseline choice, and should not be treated as the marginal or discrete effect obtained from the model. Instead, the modeller has to derive "partial effects" from the coefficient estimates, which is analogous to the coefficients in a regular linear model. The rest of the section provides detail information for deriving two types of partial effects: marginal effects and discrete effects. 
 
-# Marginal Effects
+## Marginal Effects
 
-Instead, researchers need to compute what's called the "marginal effect", as we usually do in linear models. The marginal effect of the multinomial models actually has a very distinctive form: 
+Marginal effect is the counterpart of the coefficients of a continous variable in a linear model. It measures the effect of a marginal change of a continuous variable $x_k$ on the choice variable $y_j$. It should be point out that the right hand size variable, $x_k$, will have J marginal effects, each on one choice variable $y_j$.
+
+The marginal effect of the multinomial models actually has a very distinctive form: 
  
 $$ME_{jk} = \frac{\partial p_j}{x_k} = p_j(\beta_{kj} - \bar{\beta}_i)$$
  
@@ -70,7 +71,7 @@ Discrete effect is a little bit different from marginal effects. Instead of calc
 coefficients, discrete effect considers the impact of a discrete change in one covariates on the predicted outcome variables. This is especially useful for dummy variables, where calculating marginal effects does not make much sense. 
 
 The discrete effect has a straight-forward form. Consider a discrete change of a dummy variable k from 0 to 1. This is just
-$$D_j = Pr(y=j|\mathbf{x}_{x_k=1}) - Pr(y=j|\mathbf{x}_{x_k=0})$$
+$$DE_{jk} = Pr(y=j|\mathbf{x}_{x_k=1}) - Pr(y=j|\mathbf{x}_{x_k=0})$$
 The change in predicted value by setting $x_k=1$ and $x_k=0$. 
 
 Similar to the marginal effect case, we can calculate discrete effects at the mean (DEM) by predicting the outcome when all other covariates at the mean, or average discrete effects, which averages the predicted difference across all observations. 
@@ -89,7 +90,10 @@ For i in 1:N, where N is a very large number,
 
 And after sufficiently large sample size, the empirical variance converges to the theoretical variance. 
 
-Note that the Krinsky-Robb sampling is done by setting all other covariates to the mean, i.e., the MEM and the DEM approach. 
+## Hypothesis Testing of Marginal and Discrete Effects
+One of the major advantages of Krinsky-Robb over numerical Delta method is in hypothesis testing of those effects. The marginal and discrete effect are not normally distributed since the effect contains a multinomial logit distributed $p_ij$. So even though sample size is large, the central limit theorem does not really hold here. So knowing the standard error does not really help if we do not know the actual shape of the density. But that is out of the scope of the Delta method.
+
+Krinsky-Robb solves this problem by providing empirical draws from the marginal effects. Hypothesis testing here will be very simple: say we test $H_0: D_j=0$. We just need to compare 0 with our N draws, and see if it falls out of the 95% mass. This is a major advantage we provide here comparing with Stata's fmlogit module. 
 
 # Practical Concerns
 ## Optimization Method

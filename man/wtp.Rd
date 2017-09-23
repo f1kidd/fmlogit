@@ -4,7 +4,7 @@
 \alias{wtp}
 \title{"Willingness to Pay" for fmlogit models}
 \usage{
-wtp(object, wtp.vec, varlist = NULL)
+wtp(object, wtp.vec, varlist = NULL, indv.obs = F)
 }
 \arguments{
 \item{object}{An "fmlogit.margins" object.}
@@ -22,7 +22,7 @@ Calculates the willingness to pay for fractional multinomial logit models.
 }
 \details{
 This function calculates the aggregate effect of a variable on the 
-"willingness to pay" by linearly multiplying coefficients with ex-ante (arbitary) 
+"willingness to pay" by linearly multiplying the average partial effect with ex-ante (arbitary) 
 willingness to pay numbers associated with each choice. 
 
 Suppose there are three choices A,B,C, each with a willingness to pay (or cost, profit, budget),
