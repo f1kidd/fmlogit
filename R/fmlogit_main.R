@@ -29,6 +29,7 @@
 #' @return \code{y}           The dependent variable data frame.
 #' @return \code{X}           The independent variable data frame. Augmented by factor dummy transformation
 #' , constant term added. 
+#' @return \code{rowNo}       A vector of row numbers from the original X and y that is used for estimation.
 #' @return \code{coefficient} Matrix of estimated coefficients. Augmented with the baseline coefficient
 #' (which is a vector of zeros). 
 #' @return \code{vcov}        A list of matrices containing the robust variance covariance matrix for each choice
@@ -94,12 +95,21 @@ n = dim(X)[1]; j=dim(y)[2]; k=dim(X)[2]
 # handles missing value
 xy = cbind(X,y)
 xy = na.omit(xy)
+row.remain = setdiff(1:n,attr(xy,"na.action"))
 X = xy[,1:k]; y=xy[,(k+1):(k+j)]
 n = dim(X)[1]
 remove(xy)
 
+# remove pre-existing constant variables
+X = X[,apply(X,2,function(x) length(unique(x))!=1)]
+Xnames = colnames(X)
+k=dim(X)[2]
+# add constant term. k does not change here. 
+X = cbind(X,rep(1,n))
+Xnames = c(Xnames,"constant"); colnames(X) = Xnames
+
 # test if there is colinearity in X
-testcols <- function(X) {
+testcols <- function(X){
   m = crossprod(as.matrix(X))
   ee= eigen(m)
   ## split eigenvector matrix into a list, by columns
@@ -109,21 +119,14 @@ testcols <- function(X) {
     if (val!=0) NULL else which(vec!=0)
   },zapsmall(ee$values),evecs)
 }
-collinear = unlist(testcols(X))
-if(length(collinear)>1) {X = X[,-collinear[-1]]; Xnames = colnames(X)}
-
-# remove pre-existing constant variables
-X = X[,apply(X,2,function(x) length(unique(x))!=1)]
-# add constant term if necessary
-X = cbind(X,rep(1,n))
-# here k is No. of explanatories, without the constant term. 
-knew = qr(X)$rank # rank of X matrix
-k=knew-1
-if(knew<dim(X)[2]){ # X has constant column
-  X = X[,1:knew]
-} else{ # Augment constant column
-  if(length(Xnames)==k) Xnames = c(Xnames,"constant"); colnames(X) = Xnames
+collinear = unique(unlist(testcols(X)))
+while(length(collinear)>0){
+  if((k+1) %in% collinear) collinear = collinear[-length(collinear)]
+  X = X[,-collinear[length(collinear)]]; Xnames = colnames(X); k=k-1
+  collinear = unique(unlist(testcols(X)))
 }
+
+
 
 QMLE<-function(betas){
   # This is the overall(sum) log likelihood. 
@@ -217,6 +220,7 @@ outlist$convergence = paste(opt$type, paste(as.character(opt$iterations),"iterat
 outlist$count = c(Obs=n,Explanatories=k,Choices=j)
 outlist$y = y
 outlist$X = X
+outlist$rowNo = row.remain
 outlist$coefficient = betamat_aug
 names(vcov) = ynames
 outlist$vcov = vcov

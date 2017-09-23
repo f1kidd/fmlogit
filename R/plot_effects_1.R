@@ -1,8 +1,8 @@
-#' Plot marginal or discrete effects, at each observation & for each choice
+#' Plot marginal or discrete effects of willingness to pay
 #' 
-#' Plot the desired effect at each observed value for each choice
+#' Plot marginal or discrete effects of willingness to pay, potentially against another variable
 #' 
-#' @param object An "fmlogit.margins" object.
+#' @param object An "fmlogit" object.
 #' @param varlist A string vector which provides the name of variables to plot the effect.
 #'  If missing, all variables in object will be plotted.
 #' @param X The covariates matrix. Recommend to use element X from the fmlogit object. 
@@ -15,6 +15,8 @@
 #' @param group.by A character string. Supply additional algebra emposed on the group variable. 
 #' @param mfrow A numeric vector with two elements. Specify the number of rows and columns in a panel.
 #' Similar to par(mfrow=c()). Default to Null, and the program will choose a square panel. 
+#' @param plot.show If true, the plot will be created. Otherwise the function returns raw data that can be
+#' used to create user-specified (fancier) plots. 
 #' @return Panel plots of effects vs. chosen variables
 #' @details 
 #' This function provides a visualization tool for potentially heterogeneous marginal and discrete effects.
@@ -46,70 +48,55 @@
 #' 
 #' # Plot only takes effects with marg.type="aveacr". 
 #' plot(effect1,X=results1$X,against.x = "popdens", group = "tot", groupby = ">3")
-#' @export plot.fmlogit.margins
+#' @export plot.fmlogit
 
 
-
-plot.fmlogit.margins = function(object,varlist=NULL,X=NULL,y=NULL, 
-                                against=NULL,against.x=NULL,against.y=NULL,
-                                group.x=NULL, group.algebra=NULL,
-                                mfrow=NULL){
-  require(ggplot2)
-  require(grid)
-  
-  if(is.null(object[["marg.list"]])) stop("Please choose marg.type=aveacr when calculating effects")
-  k = ncol(object$effects); j = nrow(object$effects); N = nrow(object$marg.list[[1]]); 
-  Xnames = colnames(object$effects) ; ynames = rownames(object$effects)
+plot.fmlogit = function(object,wtp.vec,varlist, against=NULL,mfrow=NULL,t=500,effect=c("discrete","marginal"),
+                        type="l",plot.show=T,...){
+  K = ncol(object$X); j = ncol(object$y); N = nrow(object$X); 
+  Xnames = colnames(object$X) ; ynames = colnames(object$y)
   X = object$X; y=object$y
   
   # determine variable list
-  if(length(varlist)==0){
-    varlist=Xnames
-    var_colNo = 1:k
-  }else{
-    var_colNo = which(Xnames %in% varlist)
-    k = length(var_colNo)
-  }
-  if(k==0) stop("Variable list not matched. Please check your varlist input.")
+  var_colNo = which(Xnames %in% varlist)
+  k = length(var_colNo)
   
-  # determine panel size
   if(is.null(mfrow)){
-    js = ceiling(sqrt(j))
-    jr = ifelse(js*(js-1)>j,js-1,js)
+    js = ceiling(sqrt(k))
+    jr = ifelse(js*(js-1)>=k,js-1,js)
   }else{
     jr = mfrow[1]; js = mfrow[2]
   }
   
-  # determine plotting x axis. 
-  if(is.null(against) & is.null(against.x) & is.null(against.y)) {M.against=1:N; ag.name = "ObsNo"}
-  if(is.null(against.x)==F) {M.against = X[,against.x]; ag.name = against.x}
-  if(is.null(against.y)==F) {M.against = y[,against.y]; ag.name = against.y}
-  
-  
-  # determine group variables
-  if(is.null(group.x) & is.null(group.algebra)) {M.group=NULL; g.name=NULL}
-  if(is.null(group.x)==F) {M.group = X[,group.x]; g.name.display <- g.name <- group.x;}
-  if(is.null(group.algebra)==F) {
-    M.group = eval(parse(text=paste("X[,",'"',group.x,'"',"]",group.algebra,sep="")))
-    M.group = ifelse(M.group,"Yes","No")
-    g.name = group.x
-    g.name.display = paste(group.x,group.algebra,sep="")
+  if(!is.null(against)) {
+    ag_No = which(Xnames == against)
+    if(length(ag_No)==0) stop(paste("The against vector specified,",against,
+                                    "is not in the list of explanatory variables. Please check again."))
+    ag_min = min(X[,ag_No]); ag_max = max(X[,ag_No])
+    ag_vec = seq(ag_min,ag_max,length.out = t)
+    wtp_mat = matrix(nrow=t,ncol=k)
+    colnames(wtp_mat) = varlist
+    for(i in 1:t){
+      newdata = colMeans(X[,-K])
+      newdata[ag_No] = ag_vec[i]
+      wtp_mat[i,] = wtp(effects(object,effect=effect,se=F,varlist=varlist,at=newdata),wtp.vec)[[1]]
     }
-  
-  for(c in var_colNo){
-    ggplot()
-    pushViewport(viewport(layout = grid.layout(jr, js)))
-    temp.data = cbind(object$marg.list[[c]],M.against)
-    temp.data = as.data.frame(temp.data)
-    colnames(temp.data) = c(colnames(object$marg.list[[c]]),ag.name)
-    if(is.null(M.group)==F){
-      temp.data = cbind(temp.data,as.factor(M.group))
-      colnames(temp.data)[-1] = g.name}
-    for(i in 1:j){
-      g <- ggplot(temp.data,aes_string(ag.name,ynames[i],color=g.name)) + geom_point() 
-      g <- g + geom_hline(yintercept = 0) + theme_classic() + ggtitle(paste("Effects on", Xnames[c]))
-      if(is.null(M.group)==F) g <- g + theme(legend.title = element_text(colour="black"))+
-        scale_color_discrete(name=g.name.display)
-      print(g,vp = viewport(layout.pos.row = ifelse(i%%jr==0,jr,i%%jr), layout.pos.col = (i-1) %/%js + 1) )
+  }else{
+    against="ObsNo"
+    ag_vec=1:N
+    wtp_mat = matrix(nrow=N,ncol=k)
+    colnames(wtp_mat) = varlist
+    for(i in 1:N){
+      newdata = X[i,-K]
+      wtp_mat[i,] = wtp(effects(object,effect=effect,se=F,varlist=varlist,at=newdata),wtp.vec)[[1]]
+    }
   }
-}}
+  # plotting
+  if(plot.show){
+    par(mfrow=c(jr,js))
+    if(is.null(type)){type="l"} # default to line plot. 
+    for(i in 1:k){
+      plot(ag_vec,wtp_mat[,i],xlab=against,ylab=paste(effect,"effect of", varlist[i]),...)
+    }}
+  return(list(ag_vec,wtp_mat))
+}

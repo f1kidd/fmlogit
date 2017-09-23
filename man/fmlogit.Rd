@@ -53,6 +53,8 @@ An object of class "fmlogit" contains the following components:
 \code{X}           The independent variable data frame. Augmented by factor dummy transformation
 , constant term added.
 
+\code{rowNo}       A vector of row numbers from the original X and y that is used for estimation.
+
 \code{coefficient} Matrix of estimated coefficients. Augmented with the baseline coefficient
 (which is a vector of zeros).
 

@@ -8,7 +8,7 @@
 #' the wtp. If missing, all variables in object will be calculated. 
 #' @return A matrix containing the estimates, standard error, z-stats, and p-value. 
 #' @details This function calculates the aggregate effect of a variable on the 
-#' "willingness to pay" by linearly multiplying coefficients with ex-ante (arbitary) 
+#' "willingness to pay" by linearly multiplying the average partial effect with ex-ante (arbitary) 
 #' willingness to pay numbers associated with each choice. 
 #' 
 #' Suppose there are three choices A,B,C, each with a willingness to pay (or cost, profit, budget),
@@ -25,14 +25,13 @@
 #' # assume that the WTP = 1,2,3,...J for each choice j. 
 #' wtp(effects1,seq(1:nrow(effects1$effects))) 
 #' @export wtp
-#'
 
-wtp = function(object,wtp.vec,varlist=NULL){
-  j=nrow(object$effects); K=ncol(object$effects)
+wtp = function(object,wtp.vec,varlist=NULL,indv.obs=F){
+  j=nrow(object$effects); k=ncol(object$effects)
   Xnames = colnames(object$effects); ynames = rownames(object$effects)
   if(length(varlist)==0){
     varlist=Xnames
-    var_colNo = c(1:K)
+    var_colNo = c(1:k)
     k = length(var_colNo)
   }else{
     var_colNo = which(varlist %in% Xnames)
@@ -42,7 +41,8 @@ wtp = function(object,wtp.vec,varlist=NULL){
   # wtp calcs
   betamat = object$effects[,varlist]; semat = object$se[,varlist]
   wtp_mean = wtp.vec %*% betamat
-  if(object$R>0){
+
+  if(object$R>0){ # prevent a bug that does not output R in the effects.fmlogit module. 
   wtp_se = sqrt(wtp.vec^2 %*% semat^2)
   # output tables
   tabout = matrix(ncol=4,nrow=k)
@@ -52,7 +52,19 @@ wtp = function(object,wtp.vec,varlist=NULL){
   tabout[,4] = 2*(1-pnorm(abs(tabout[,3])))
   colnames(tabout) = c("estimate","std","z","p-value")
   rownames(tabout) = varlist
-  return(tabout)
-  }else return(wtp_mean)
+  }else tabout = wtp_mean
+  if(indv.obs){
+    wtp_mat = matrix(ncol = k, nrow=nrow(object$marg.list[[1]]))
+    for(c in var_colNo){
+      c1 = which(var_colNo == c)
+      wtp_mat[,c1] = as.matrix(object$marg.list[[c1]]) %*% wtp.vec
+    }
+    colnames(wtp_mat) = varlist
+  }
+  # output list
+  outlist = list()
+  outlist$wtp = tabout
+  if(indv.obs) outlist$wtp.obs = wtp_mat
+  return(structure(outlist,class="fmlogit.wtp"))
 }
   
