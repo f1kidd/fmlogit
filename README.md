@@ -14,8 +14,6 @@ The model is distinct in that 1) each of the response lies between 0 and 1, and 
 <<<<<<< HEAD
 
 Fractional multinomial logit model estimates fractional response choice models by modelling the dependent variables as fractions using multinomial logits. It is the preferred model when the true data generation process is indeed fractions of multiple choices. 
-=======
->>>>>>> origin/master
 
 # How to install fmlogit
 Type the following code into your R console:
@@ -34,13 +32,13 @@ However, this package offers several advantages over Stata's fmlogit module, nam
 Implementating the model in R offers the opportunity to integrate the whole empirical process. With the help of numerous R packages, everything can be accomplished in R from data processing, estimation, post-estimation, to final manuscript writing. This is a huge advantage over stata. 
 
 ## 2. Post-estimation Improvements
-<<<<<<< HEAD
+
 The marginal effect estimation in this package is much faster than Stata's fmlogit package. In this package user can specify which variable(s), and what type of partial effect to be calculated. This results in a huge gain in running time for the post-estimation commands. 
-=======
+
 The marginal effect estimation in this package is much faster than Stata's fmlogit package. In this package user can specify which variable(s), and what effect to be calculated. This results in a huge gain in running time for the post-estimation commands. 
 
 Also, this package allows hypothesis testing for marginal and discrete effects while Stata does not. The standard error is calculated via Krinsky-Robb method, which allows empirical hypothesis testing without knowing the underlying distribution of the effects. 
->>>>>>> origin/master
+
 
 ## 3. Estimation Flexibility
 This package allows factor variable inputs, and automatically transform it into dummy variables. This is not (explicitly) allowed in Stata. 
@@ -74,13 +72,13 @@ A more inclusive approach will be to plot the marginal effect of interest across
 
 ## Standard Errors for APEs
 
-<<<<<<< HEAD
+
 Here we adopt the simulation-based Krinsky-Robb method to compute standard errors for marginal and discrete effects as oppose to the empirical delta method used in Stata. These two methods should be asymptotically equivalent. Hypothesis testing is done using the standard normal z-test by treating the APE estimates as normally distributed.
-=======
+
 Here we adopt the simulation-based Krinsky-Robb method to compute standard errors for marginal and discrete effects as oppose to the empirical delta method used in Stata. These two methods should be asymptotically equivalent. However, using Krinsky-Robb allow us to perform hypothesis testing on the effects, while Delta method cannot accomplish that. 
 
 The hypothesis testing here is very simple: say we test $H_0: D_j=0$. We just need to compare 0 with our N draws, and see if it falls out of the 95% mass. This is a major advantage we provide here comparing with Stata's fmlogit module. 
->>>>>>> origin/master
+
 
 # Practical Concerns
 
@@ -92,6 +90,8 @@ However, the loss in estimation will certainly be compensated in the post-estima
 Papke, L. E. and Wooldridge, J. M. (1996), Econometric methods for fractional response variables with an application to 401(k) plan participation rates. J. Appl. Econ., 11: 619-632.
 
 Wulff, Jesper N. "Interpreting Results From the Multinomial Logit Model Demonstrated by Foreign Market Entry." Organizational Research Methods (2014): 1094428114560024.
+
+Mullahy, J., 2015. Multivariate fractional regression estimation of econometric share models. Journal of Econometric Methods 4(1), 71-100.
 
 
 
