@@ -27,18 +27,18 @@ library(fmlogit)
 Don't we already have an fmlogit module in Stata? Yes, and you are very welcome to [check that out](http://maartenbuis.nl/software/fmlogit.html) if you can afford a Stata license. 
 
 However, this package offers several advantages over Stata's fmlogit module, namely:
-## 1. Integration with the R Platform
+### 1. Integration with the R Platform
 Implementating the model in R offers the opportunity to integrate the whole empirical process within a free, open-source platform. With the help of numerous R packages, everything can be accomplished in R from data processing, estimation, post-estimation, to final manuscript writing. This is a huge advantage over stata. 
 
-## 2. Post-estimation Improvements
+### 2. Post-estimation Improvements
 The marginal effect estimation in this package is much faster than Stata's fmlogit package. In this package user can specify which variable(s), and what type of partial effect to be calculated. This results in a huge gain in running time for the post-estimation commands. 
 
 Also, this package allows hypothesis testing for marginal and discrete effects while Stata does not. The standard error is calculated via Krinsky-Robb method, which allows empirical hypothesis testing without knowing the underlying distribution of the effects. 
 
-## 3. Estimation Flexibility
+### 3. Estimation Flexibility
 This package allows factor variable inputs, and automatically transform it into dummy variables. This is not (explicitly) allowed in Stata. 
 
-## 4. Extensions
+### 4. Extensions
 This package also allows the user to easily calculate and infer the "average aggregate partial effect" given a user-specified weight scheme. This is done through linearly aggregating the attribute of each choice (e.g., expected profit/utility of each choice) with the calculated APE. 
 
 # How does the estimator work?
