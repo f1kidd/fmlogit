@@ -8,11 +8,9 @@ output: pdf_document
 This document provides an overview of the fmlogit package in R. Updates will be published at [my github site](https://github.com/f1kidd/fmlogit). Any suggestions or concerns are welcome. 
 
 # What is the fractional multinomial logit model?
-Fractional multinomial responses (sometimes also called multivariate share models) arise naturally in various occasions. For example, a municipality allocates its budget across multiple departments, and we are interested in the proportion of the budget that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in explaining the percentage of support for each candidate in each state. 
+Fractional multinomial logit models estimate fractional responses by modelling the dependent variables as fractions using multinomial logits. It is the preferred model when the true data generation process is indeed fractions of multiple choices. Fractional responses arise naturally in various settings. For example, a municipality allocates its budget across multiple departments, and we are interested in the proportion of the budget that each department receives. Or, there are multiple candidates in a presendential election, and we are interested in explaining the percentage of support for each candidate in each state. 
 
 The model is distinct in that: 1) each of the responses lies between 0 and 1, and 2) the share of all responses adds up to one. The fmlogit model uses these two distinct factors, and models them explicitly. 
-
-Fractional multinomial logit models estimate fractional responses by modelling the dependent variables as fractions using multinomial logits. It is the preferred model when the true data generation process is indeed fractions of multiple choices. 
 
 # How to install fmlogit
 Type the following code into your R console:
@@ -28,14 +26,14 @@ Don't we already have an fmlogit module in Stata? Yes, and you are very welcome 
 
 However, this package offers several advantages over Stata's fmlogit module, namely:
 ### 1. Integration with the R Platform
-Implementating the model in R offers the opportunity to integrate the whole empirical process within a free, open-source platform. With the help of numerous R packages, everything can be accomplished in R from data processing, estimation, post-estimation, to final manuscript writing. This is a huge advantage over stata. 
+Implementating the model in R offers the opportunity to integrate the whole empirical process within a free, open-source platform. With the help of numerous R packages, everything can be accomplished in a single environment including data processing, estimation, post-estimation, and final manuscript writing. This is a huge advantage over stata. 
 
-### 2. Post-estimation Improvements
+### 2. Post-estimation improvements
 The marginal effect estimation in this package is much faster than Stata's fmlogit package. In this package user can specify which variable(s), and what type of partial effect to be calculated. This results in a huge gain in running time for the post-estimation commands. 
 
 Also, this package allows hypothesis testing for marginal and discrete effects while Stata does not. The standard error is calculated via Krinsky-Robb method, which allows empirical hypothesis testing without knowing the underlying distribution of the effects. 
 
-### 3. Estimation Flexibility
+### 3. Estimation flexibility
 This package allows factor variable inputs, and automatically transform it into dummy variables. This is not (explicitly) allowed in Stata. 
 
 ### 4. Extensions
@@ -69,14 +67,12 @@ Here we adopt the simulation-based Krinsky-Robb method to compute standard error
 
 Hypothesis testing is done using the standard normal z-test by treating the APE estimates as normally distributed. The approach is very simple: say we test $H_0: D_j=0$. We just need to compare 0 with our N draws, and see if it falls out of the 95% mass. This is a major advantage we provide here compared to Stata's fmlogit module. 
 
-
 # Practical Concerns
 One of the concerns for the package is the computation speed of the estimation process. The maximization process can take somewhere from 20 seconds to 1 hour, depending on how large the dataset is. This is certainly a limitation. This is the inherent drawback of R's computation speed, and I can do nothing about that. 
 
 However, the loss in estimation will certainly be compensated in the post-estimation process. Stata's dfmlogit command is very slow (takes somewhere between 5-60 minutes), while here the effects calculation takes seconds to complete. 
 
 # References
-
 Papke, L. E. and Wooldridge, J. M. (1996), Econometric methods for fractional response variables with an application to 401(k) plan participation rates. J. Appl. Econ., 11: 619-632.
 
 Wulff, Jesper N. "Interpreting Results From the Multinomial Logit Model Demonstrated by Foreign Market Entry." Organizational Research Methods (2014): 1094428114560024.
