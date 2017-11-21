@@ -19,4 +19,3 @@ Data from 429 Dutch cities with governmental spending on each sub-category
 spending
 }
 \keyword{datasets}
-

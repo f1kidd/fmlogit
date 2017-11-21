@@ -2,8 +2,9 @@
 % Please edit documentation in R/predictions.R
 \name{fitted.fmlogit}
 \alias{fitted.fmlogit}
-\alias{predict.fmlogit}
 \alias{residuals.fmlogit}
+\alias{residuals.fmlogit}
+\alias{predict.fmlogit}
 \title{Extract fitted values, residuals, and residuals}
 \usage{
 \method{fitted}{fmlogit}(object)
@@ -34,4 +35,3 @@ predict(results1)
 # predict using the first observation from the original dataset.
 predict(results1,X[1,])
 }
-

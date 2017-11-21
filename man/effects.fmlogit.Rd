@@ -85,4 +85,3 @@ KR standard error can be time-consuming, it is advised to calculate only the var
 effects(results1,effect="marginal")
 effects(results1,effect="discrete",varlist = colnames(object$X)[c(1,3)])
 }
-

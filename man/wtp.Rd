@@ -40,4 +40,3 @@ Note that if the input fmlogit.margins object has no standard error computation,
 # assume that the WTP = 1,2,3,...J for each choice j. 
 wtp(effects1,seq(1:nrow(effects1$effects))) 
 }
-

@@ -104,11 +104,11 @@ n = dim(X)[1]
 remove(xy)
 
 # remove pre-existing constant variables
-
 X = X[,apply(X,2,function(x) length(unique(x))!=1)]
 Xnames = colnames(X)
 k=dim(X)[2]
 # add constant term. k does not change here. 
+
 X = cbind(X,rep(1,n))
 Xnames = c(Xnames,"constant"); colnames(X) = Xnames
 
@@ -125,6 +125,7 @@ testcols <- function(X){
 }
 collinear = unique(unlist(testcols(X)))
 while(length(collinear)>0){
+  if(qr(X)$rank==dim(X)[2]) print("Model may suffer from multicollinearity problems."); break
   if((k+1) %in% collinear) collinear = collinear[-length(collinear)]
   X = X[,-collinear[length(collinear)]]; Xnames = colnames(X); k=k-1
   collinear = unique(unlist(testcols(X)))

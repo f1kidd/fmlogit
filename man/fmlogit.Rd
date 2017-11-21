@@ -102,4 +102,3 @@ Papke, L. E. and Wooldridge, J. M. (1996), Econometric methods
   for fractional response variables with an application to 401(k) plan
   participation rates. J. Appl. Econ., 11: 619-632.
 }
-

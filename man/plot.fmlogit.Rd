@@ -74,4 +74,3 @@ Additional parameters including \code{varlist}, a vector of string variable name
 # Plot only takes effects with marg.type="aveacr". 
 plot(effect1,X=results1$X,against.x = "popdens", group = "tot", groupby = ">3")
 }
-

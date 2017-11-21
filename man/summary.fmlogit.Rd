@@ -3,6 +3,7 @@
 \name{summary.fmlogit}
 \alias{summary.fmlogit}
 \alias{summary.fmlogit.margins}
+\alias{summary.fmlogit.margins}
 \alias{summary.fmlogit.wtp}
 \title{Generate summary tables for fmlogit objects}
 \usage{
@@ -63,4 +64,3 @@ summary(effects1)
 # require(xtable)
 xtable(summary(effects1,list=F,sepline=T))
 }
-
