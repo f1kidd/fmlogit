@@ -15,8 +15,7 @@ The model is distinct in that: 1) each of the responses lies between 0 and 1, an
 # How to install fmlogit
 Type the following code into your R console:
 ```R
-install(devtools)
-library(devtools)
+require(devtools)
 install_github("f1kidd/fmlogit")
 library(fmlogit)
 ```
