@@ -5,7 +5,8 @@
 \title{Average Partial Effects of the Covariates}
 \usage{
 \method{effects}{fmlogit}(object, effect = c("marginal", "discrete"),
-  marg.type = "atmean", se = F, varlist = NULL, at = NULL, R = 1000)
+  marg.type = "atmean", se = F, varlist = NULL, at = NULL,
+  R = 1000)
 }
 \arguments{
 \item{object}{An "fmlogit" object.}

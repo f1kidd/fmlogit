@@ -5,8 +5,8 @@
 \title{Plot marginal or discrete effects of willingness to pay}
 \usage{
 \method{plot}{fmlogit}(object, wtp.vec, varlist, against = NULL,
-  mfrow = NULL, t = 500, effect = c("discrete", "marginal"), type = "l",
-  plot.show = T, ...)
+  mfrow = NULL, t = 500, effect = c("discrete", "marginal"),
+  type = "l", plot.show = T, ...)
 }
 \arguments{
 \item{object}{An "fmlogit" object.}

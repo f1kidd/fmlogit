@@ -1,4 +1,4 @@
-#' Extract fitted values, residuals, and residuals
+#' Extract fitted values, residuals, and predictions
 #' 
 #' @name fitted.fmlogit
 #' @aliases residuals.fmlogit

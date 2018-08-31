@@ -221,14 +221,13 @@ summary.fmlogit.wtp = function(object,varlist=NULL,sepline=F,digits=3,sigcode=c(
   K = length(var_colNo)
   if(K < length(varlist)) warning("Some variables requested are not in the variable list. Those variables are omitted.")
   varlist = Xnames[var_colNo]
-  
+  sig.print = paste("Significance code: 0", "'***'", sigcode[3], "'**'", sigcode[2], "'*'", sigcode[1], "' ", 1)
   if(!sepline){
   # table process
   store_mat = apply(signif(object$wtp[var_colNo,],digits=digits), 1, function(x) paste(x[1],"(",x[2],")",asterisk(x[4]),sep=""))
   store_mat = as.data.frame(store_mat)
   colnames(store_mat)=NULL
   # output matters
-  sig.print = paste("Significance code: 0", "'***'", sigcode[3], "'**'", sigcode[2], "'*'", sigcode[1], "' ", 1)
   }else{          
     store_beta=apply(signif(object$wtp[var_colNo,],digits=digits),1, function(x) paste(x[1],asterisk(x[4]),sep=""))
     store_se=apply(signif(object$wtp[var_colNo,],digits=digits), 1, function(x) paste("(",x[2],")",sep=""))

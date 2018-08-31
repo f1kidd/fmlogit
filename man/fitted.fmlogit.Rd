@@ -3,9 +3,8 @@
 \name{fitted.fmlogit}
 \alias{fitted.fmlogit}
 \alias{residuals.fmlogit}
-\alias{residuals.fmlogit}
 \alias{predict.fmlogit}
-\title{Extract fitted values, residuals, and residuals}
+\title{Extract fitted values, residuals, and predictions}
 \usage{
 \method{fitted}{fmlogit}(object)
 
@@ -25,7 +24,7 @@ Feeds into object$coefficient, which contains the baseline coefficient. Useful f
 confidence intervals via simulation or bootstrapping.}
 }
 \description{
-Extract fitted values, residuals, and residuals
+Extract fitted values, residuals, and predictions
 }
 \examples{
 #results1 = fmlogit(y,X)
