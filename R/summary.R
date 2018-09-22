@@ -93,7 +93,7 @@ summary.fmlogit = function(object,varlist=NULL,sepline=F,digits=3,add.info=T,lis
   sig.print = paste("Significance code: 0", "'***'", sigcode[3], "'**'", sigcode[2], "'*'", sigcode[1], "' ", 1)
   if(add.info){
     nc = paste("N=",object$count[1],sep="")
-    llf = paste("log pseudo-likelihood=",signif(object$likelihood,digits=2),sep="")
+    llf = paste("log pseudo-likelihood=",round(object$likelihood,digits=2),sep="")
     bl = paste("Baseline choice:", object$baseline)
   }
   if(list){

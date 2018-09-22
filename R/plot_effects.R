@@ -60,7 +60,7 @@ plot.fmlogit.margins = function(object,varlist=NULL,X=NULL,y=NULL,
   if(is.null(object[["marg.list"]])) stop("Please choose marg.type=aveacr when calculating effects")
   k = ncol(object$effects); j = nrow(object$effects); N = nrow(object$marg.list[[1]]); 
   Xnames = colnames(object$effects) ; ynames = rownames(object$effects)
-  X = object$X; y=object$y
+  # X = object$X; y=object$y
   
   # determine variable list
   if(length(varlist)==0){
@@ -81,9 +81,19 @@ plot.fmlogit.margins = function(object,varlist=NULL,X=NULL,y=NULL,
   }
   
   # determine plotting x axis. 
-  if(is.null(against) & is.null(against.x) & is.null(against.y)) {M.against=1:N; ag.name = "ObsNo"}
-  if(is.null(against.x)==F) {M.against = X[,against.x]; ag.name = against.x}
-  if(is.null(against.y)==F) {M.against = y[,against.y]; ag.name = against.y}
+  if(is.null(against) & is.null(against.x) & is.null(against.y)){
+    M.against=1:N 
+    ag.name = "ObsNo"
+  }else if(is.null(against.x)==F){
+    M.against = X[,against.x]
+    if(is.null(M.against)){
+      stop("against.x not found in variable list. Please double check your spelling")
+    }
+    ag.name = against.x
+  }else if(is.null(against.y)==F){
+    M.against = y[,against.y] 
+    ag.name = against.y
+  }else{M.against=against}
   
   
   # determine group variables

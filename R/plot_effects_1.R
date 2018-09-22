@@ -9,10 +9,6 @@
 #' @param y The covariates matrix. Recommend to use element y from the fmlogit object. 
 #' @param against A vector with the same length as the number of observations in the model. 
 #' Serve as the x-axis in the plots.
-#' @param against.x A character string, Supply the column name in the X matrix to be plot against.
-#' @param against.y A character string, Supply the column name in the y matrix to be plot against.
-#' @param group.x A character string. Supply the column name in the X matrix to be grouped upon. 
-#' @param group.by A character string. Supply additional algebra emposed on the group variable. 
 #' @param mfrow A numeric vector with two elements. Specify the number of rows and columns in a panel.
 #' Similar to par(mfrow=c()). Default to Null, and the program will choose a square panel. 
 #' @param plot.show If true, the plot will be created. Otherwise the function returns raw data that can be

@@ -3,6 +3,7 @@
 \name{fitted.fmlogit}
 \alias{fitted.fmlogit}
 \alias{residuals.fmlogit}
+\alias{residuals.fmlogit}
 \alias{predict.fmlogit}
 \title{Extract fitted values, residuals, and predictions}
 \usage{

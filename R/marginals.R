@@ -74,7 +74,7 @@ effects.fmlogit<-function(object,effect=c("marginal","discrete"),
     var_colNo = c(1:(K-1))
     k = length(var_colNo)
   }else{
-    var_colNo = which(Xnames %in% varlist)
+    var_colNo = unlist(lapply(varlist, function(x) {which(Xnames == x)}))
     if(length(varlist) != length(var_colNo)) stop("Unrecognized varlist input. Please double check your spelling")
     k = length(var_colNo)
   }

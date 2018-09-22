@@ -3,16 +3,16 @@
 \name{summary.fmlogit}
 \alias{summary.fmlogit}
 \alias{summary.fmlogit.margins}
+\alias{summary.fmlogit.margins}
 \alias{summary.fmlogit.wtp}
 \title{Generate summary tables for fmlogit objects}
 \usage{
-\method{summary}{fmlogit}(object, varlist = NULL, sepline = F,
-  digits = 3, add.info = T, list = T, sigcode = c(0.05, 0.01,
-  0.001), print = F)
+\method{summary}{fmlogit}(object, varlist = NULL, sepline = F, digits = 3,
+  add.info = T, list = T, sigcode = c(0.05, 0.01, 0.001), print = F)
 
 \method{summary}{fmlogit.margins}(object, varlist = NULL, sepline = F,
-  digits = 3, add.info = T, list = T, sigcode = c(0.05, 0.01,
-  0.001), print = F)
+  digits = 3, add.info = T, list = T, sigcode = c(0.05, 0.01, 0.001),
+  print = F)
 
 \method{summary}{fmlogit.wtp}(object, varlist = NULL, sepline = F,
   digits = 3, sigcode = c(0.05, 0.01, 0.001), print = F)

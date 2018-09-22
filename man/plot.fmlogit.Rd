@@ -5,8 +5,8 @@
 \title{Plot marginal or discrete effects of willingness to pay}
 \usage{
 \method{plot}{fmlogit}(object, wtp.vec, varlist, against = NULL,
-  mfrow = NULL, t = 500, effect = c("discrete", "marginal"),
-  type = "l", plot.show = T, ...)
+  mfrow = NULL, t = 500, effect = c("discrete", "marginal"), type = "l",
+  plot.show = T, ...)
 }
 \arguments{
 \item{object}{An "fmlogit" object.}
@@ -26,14 +26,6 @@ used to create user-specified (fancier) plots.}
 \item{X}{The covariates matrix. Recommend to use element X from the fmlogit object.}
 
 \item{y}{The covariates matrix. Recommend to use element y from the fmlogit object.}
-
-\item{against.x}{A character string, Supply the column name in the X matrix to be plot against.}
-
-\item{against.y}{A character string, Supply the column name in the y matrix to be plot against.}
-
-\item{group.x}{A character string. Supply the column name in the X matrix to be grouped upon.}
-
-\item{group.by}{A character string. Supply additional algebra emposed on the group variable.}
 }
 \value{
 Panel plots of effects vs. chosen variables

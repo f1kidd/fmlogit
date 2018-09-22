@@ -4,9 +4,9 @@
 \alias{plot.fmlogit.margins}
 \title{Plot marginal or discrete effects, at each observation & for each choice}
 \usage{
-\method{plot}{fmlogit.margins}(object, varlist = NULL, X = NULL,
-  y = NULL, against = NULL, against.x = NULL, against.y = NULL,
-  group.x = NULL, group.algebra = NULL, mfrow = NULL)
+\method{plot}{fmlogit.margins}(object, varlist = NULL, X = NULL, y = NULL,
+  against = NULL, against.x = NULL, against.y = NULL, group.x = NULL,
+  group.algebra = NULL, mfrow = NULL)
 }
 \arguments{
 \item{object}{An "fmlogit.margins" object.}
