@@ -81,6 +81,11 @@
 fmlogit=function(y, X, beta0 = NULL, MLEmethod = "CG", maxit = 5e+05, 
                           abstol = 1e-05,cluster=NULL,reps=1000, ...){
   start.time = proc.time()
+  
+  if(length(cluster)!=nrow(y) & !is.null(cluster)){
+    warning("Length of the cluster does not match the data. Cluster is ignored.")
+    cluster = NULL
+  }
   Xclass = sapply(X, class)
   Xfac = which(Xclass %in% c("factor", "character"))
   if (length(Xfac) > 0) {
@@ -193,10 +198,6 @@ fmlogit=function(y, X, beta0 = NULL, MLEmethod = "CG", maxit = 5e+05,
   vcov = list()
   
   ###insert--nonparametric bootstrap procedure (clustered SE and vcov)
-  if(length(cluster)!=length(row.remain) & !is.null(cluster)){
-    warning("Length of the cluster does not match the data. Cluster is ignored.")
-    cluster = NULL
-  }
   
   if(is.null(cluster)==F){
     cluster = cluster[row.remain]
