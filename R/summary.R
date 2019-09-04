@@ -59,7 +59,7 @@ summary.fmlogit = function(object,varlist=NULL,sepline=F,digits=3,add.info=T,lis
   # pre matters
   if(!class(object)=="fmlogit") stop("Expect an fmlogit object. Wrong object type given.")
   ynames = names(object[[1]]); Xnames = rownames(object[[1]][[1]])
-  if(length(varlist)==0) varlist=Xnames
+  if(length(varlist)==0){varlist=Xnames}
   var_colNo = which(Xnames %in% varlist)
   j = object$count[3]; K = length(var_colNo)
   if(K < length(varlist)) warning("Some variables requested are not in the variable list. Those variables are omitted.")
@@ -71,6 +71,10 @@ summary.fmlogit = function(object,varlist=NULL,sepline=F,digits=3,add.info=T,lis
     rownames(store_mat)=Xnames[var_colNo]
     for(i in 1:(j-1)){
       temp_data = signif(object$estimates[[i]][var_colNo,],digits=digits)
+      if(is.null(dim(temp_data))){
+        store_mat[,i] = paste(temp_data[1],"(",temp_data[2],")",asterisk(temp_data[4]),sep="")
+        next
+      }
       store_mat[,i]=apply(temp_data, 1, function(x) paste(x[1],"(",x[2],")",asterisk(x[4]),sep=""))    
     }}else{
       store_beta = store_se = matrix(ncol=j-1,nrow=K)   
@@ -78,6 +82,7 @@ summary.fmlogit = function(object,varlist=NULL,sepline=F,digits=3,add.info=T,lis
       rownames(store_beta)=varlist
       for(i in 1:(j-1)){
         temp_data = signif(object$estimates[[i]][var_colNo,],digits=digits)
+        if(is.null(dim(temp_data))) temp_data = as.matrix(temp_data)
         store_beta[,i]=apply(temp_data,1, function(x) paste(x[1],asterisk(x[4]),sep=""))
         store_se[,i]=apply(temp_data, 1, function(x) paste("(",x[2],")",sep=""))
       }

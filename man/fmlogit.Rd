@@ -5,7 +5,7 @@
 \title{Estimate Fractional Multinomial Logit Models}
 \usage{
 fmlogit(y, X, beta0 = NULL, MLEmethod = "CG", maxit = 5e+05,
-  abstol = 1e-05, ...)
+  abstol = 1e-05, cluster = NULL, reps = 1000, ...)
 }
 \arguments{
 \item{y}{the dependent variable (N*J). Can be a matrix or a named data frame.
@@ -25,6 +25,11 @@ Default to "CG", the conjugate gradients method. See Details.}
 \item{maxit}{Maximum number of iteration.}
 
 \item{abstol}{Tolerence.}
+
+\item{cluster}{A vector of cluster to be used for clustered standard error computation. 
+Default to NULL, no cluster computed.}
+
+\item{reps}{Numbers of bootstrap replications to be computed for clustered standard errors.}
 
 \item{...}{additional parameters that goes into \code{maxLik()}}
 }
@@ -60,6 +65,10 @@ An object of class "fmlogit" contains the following components:
 
 \code{vcov}        A list of matrices containing the robust variance covariance matrix for each choice
 variable.
+
+\code{cluster}     The vector of clusters.
+
+\code{reps}        Number of bootstrap replications for clustered standard error
 }
 \description{
 Used to estimate fractional multinomial logit models using quasi-maximum
