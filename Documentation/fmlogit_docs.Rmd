@@ -30,11 +30,11 @@ To estimate the standard error for the QMLE estimator, define $g(z_j)\equiv \par
 $$ g(z_j) = \frac{\hat{E}\hat{S} - \hat{E}^2}{\hat{S}^2} $$
 where $\hat{E} = exp(x_i\beta_j)$, and $\hat{S} = \sum_{k=1}^J exp(x_i\beta_k)$. 
 
-A robust asymptotic standard error , $\hat{\beta_j}$, is given by the diagonal element of the following matrix:
+A robust asymptotic standard error for $\hat{\beta_j}$ is given by the square root of the diagonal element of the following matrix:
 $$\hat{A_j}^{-1}\hat{B_j}\hat{A_j}^{-1}$$
 where
 $$\hat{A} = \sum_{i=1}^N \frac{\hat{g}_{ij}^2 \mathbf{x}_i'\mathbf{x}_i}{\hat{G}_{ij}(1-\hat{G}_{ij})} $$
-$$\hat{B} = \sum_{i=1}^N \frac{\hat{u}_{ij}^2 \hat{g}_{ij}^2 \mathbf{x}_i'\mathbf{x}_i} {[\hat{G}_{ij}](1-\hat{G}_{ij})]^2} $$
+$$\hat{B} = \sum_{i=1}^N \frac{\hat{u}_{ij}^2 \hat{g}_{ij}^2 \mathbf{x}_i'\mathbf{x}_i} {[\hat{G}_{ij}(1-\hat{G}_{ij})]^2} $$
 in which $\hat{u}_{ij}$ is the residual for the $j^{th}$ choice of the $i^{th}$ observation, given by $\hat{u}_{ij}=y_{ij} - G(x_i\beta_{j})$. Specifically, $\hat{A}$ is the information matrix, which is not a consistent estimator itself, and $\hat{B}$ is a weight correction for A. 
 
 In most binary / multinomial response models, the convention is to treat one of the choices as a baseline. Here we apply the same logic, and treat j=1 as the baseline scenario. This implicitly generates a restriction that $\beta_1=0$, and all other betas are the marginal difference to the baseline case.  
