@@ -102,7 +102,7 @@ This function calls *maxLik()* in package *maxLik* to maximize the quasi-likelih
 ## Robust Standard Error
 It is worth noting that the robust standard error created in this function is consistently lower than that created in Stata's fmlogit package, typically by about 20\%. However, the robust SE here is a consistent estimator following Pakpe and Wooldridge(1996)'s $\hat{A_j}^{-1}\hat{B_j}\hat{A_j}^{-1}$ estimator, so it is recommended that the number should be used with causion. 
 
-#References
+# References
 Papke, L. E. and Wooldridge, J. M. (1996), Econometric methods for fractional response variables with an application to 401(k) plan participation rates. J. Appl. Econ., 11: 619-632.
 
 Wulff, Jesper N. "Interpreting Results From the Multinomial Logit Model Demonstrated by Foreign Market Entry." Organizational Research Methods (2014): 1094428114560024.
