@@ -1,7 +1,7 @@
 Package: fmlogit
 Title: Fractional Multinomial Logit using QMLE
 Version: 2.0
-Authors@R: c(person("James Xinde", "Ji", email = "xji@vt.edu",role=c("aut","cre")))
+Authors@R: c(person("James Xinde", "Ji", email = "xji@brandeis.edu",role=c("aut","cre")))
 Description: Provides estimation and simple hypothesis testing of the fractional
     multinomial logit model.
 Depends:
@@ -10,4 +10,5 @@ Imports: maxLik
 Suggests: Foreign, ggplot2, grid
 Encoding: UTF-8
 LazyData: true
+License: MIT
 RoxygenNote: 6.1.1
